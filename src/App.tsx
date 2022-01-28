@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { GlobalStyle } from './styles/global';
 import { motion, Variants } from 'framer-motion';
+import { useRef } from 'react';
 
 const Wrapper = styled.div`
   height: 100vh;
@@ -10,70 +11,58 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 
+const BiggerBox = styled(motion.div)`
+  width: 600px;
+  height: 600px;
+
+  background-color: rgba(255, 255, 255, 0.4);
+  border-radius: 40px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  overflow: hidden;
+`;
+
 const Box = styled(motion.div)`
   width: 200px;
   height: 200px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
 
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
-const Circle = styled(motion.div)`
-  place-self: center;
-
-  width: 70px;
-  height: 70px;
-  background-color: white;
-  border-radius: 35px;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.6);
-`;
-
 const boxVariants: Variants = {
-  start: {
-    opacity: 0,
-    scale: 0.5,
+  hover: {
+    scale: 1.5,
+    rotateZ: 90,
   },
-  end: {
-    opacity: 1,
-    scale: 1,
-    transition: {
-      type: 'spring',
-      duration: 0.5,
-      bounce: 0.5,
-      //? 자식 애니메이션의 딜레이 설정
-      delayChildren: 0.5,
-      //? 자식간의 딜레이 설정
-      staggerChildren: 0.2,
-    },
-  },
-};
-
-const circleVariants: Variants = {
-  start: {
-    opacity: 0,
-    y: 10,
-  },
-  end: {
-    opacity: 1,
-    y: 0,
-  },
+  click: { scale: 1, borderRadius: '100px' },
+  drag: { backgroundColor: 'rgb(46, 204, 113)', transition: { duration: 10 } },
 };
 
 function App() {
+  const biggerBoxRef = useRef<HTMLDivElement>(null);
+
   return (
     <Wrapper>
       <GlobalStyle />
 
-      <Box variants={boxVariants} initial="start" animate="end">
-        {/* motion에서  제공되는 props들이 자식들에게도 모두 전달된다 */}
-        <Circle variants={circleVariants} />
-        <Circle variants={circleVariants} />
-        <Circle variants={circleVariants} />
-        <Circle variants={circleVariants} />
-      </Box>
+      <BiggerBox ref={biggerBoxRef}>
+        <Box
+          drag
+          dragSnapToOrigin
+          dragElastic={0}
+          dragConstraints={biggerBoxRef}
+          variants={boxVariants}
+          whileDrag="drag"
+          whileHover="hover"
+          whileTap="click"
+        />
+      </BiggerBox>
     </Wrapper>
   );
 }
