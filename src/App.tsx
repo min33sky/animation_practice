@@ -7,8 +7,7 @@ const Wrapper = styled(motion.div)`
   height: 100vh;
   width: 100vw;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-around;
   align-items: center;
 `;
 
@@ -18,8 +17,8 @@ const Box = styled(motion.div)`
   background-color: rgba(255, 255, 255, 1);
   border-radius: 40px;
   display: flex;
-  /* justify-content: center; */
-  /* align-items: center; */
+  justify-content: center;
+  align-items: center;
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1), 0 10px 20px rgba(0, 0, 0, 0.06);
 `;
 
@@ -39,14 +38,9 @@ function App() {
     <Wrapper onClick={toggleClicked}>
       <GlobalStyle />
 
-      <Box
-        style={{
-          justifyContent: clicked ? 'center' : 'flex-start',
-          alignItems: clicked ? 'center' : 'flex-start',
-        }}
-      >
-        <Circle layout />
-      </Box>
+      {/* 동일한 layoutID를 공유하는 컴포넌트 간에 애니메이션 적용 */}
+      <Box>{!clicked && <Circle layoutId="circle" />}</Box>
+      <Box>{clicked && <Circle layoutId="circle" />}</Box>
     </Wrapper>
   );
 }
