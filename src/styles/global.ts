@@ -57,7 +57,7 @@ export const GlobalStyle = createGlobalStyle`
 
     color: black;
     line-height: 1.2;
-
+    box-sizing: border-box;
   }
 
   a {
