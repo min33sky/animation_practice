@@ -1,58 +1,35 @@
-import styled from 'styled-components';
-import { GlobalStyle } from './styles/global';
-import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState } from 'react';
-import Movie from './components/Movie';
-import { MovieResult } from './typings/movie';
-import Filter from './components/Filter';
-
-const Container = styled.div`
-  margin: 5% 20%;
-`;
-
-const List = styled(motion.div)`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  grid-column-gap: 1rem;
-  grid-row-gap: 2rem;
-`;
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 function App() {
-  const [popular, setPopular] = useState<MovieResult[]>([]);
-  const [filtered, setFiltered] = useState<MovieResult[]>([]);
-  const [activeGenre, setActiveGenre] = useState(0);
-
-  useEffect(() => {
-    (async () => {
-      const data = await fetch(
-        `https://api.themoviedb.org/3/movie/popular?api_key=${process.env.REACT_APP_API_KEY}&language=en-US&page=1`
-      );
-      const movies = await data.json();
-      setPopular(movies.results);
-      setFiltered(movies.results);
-      console.log(movies);
-    })();
-  }, []);
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <Container>
-      <GlobalStyle />
-
-      <Filter
-        popular={popular}
-        setFiltered={setFiltered}
-        activeGenre={activeGenre}
-        setActiveGenre={setActiveGenre}
-      />
-
-      <List layout>
-        <AnimatePresence>
-          {filtered?.map((movie) => (
-            <Movie key={movie.id} title={movie.title} imageUrl={movie.backdrop_path} />
-          ))}
-        </AnimatePresence>
-      </List>
-    </Container>
+    <div className="container">
+      <motion.div
+        layout
+        transition={{ layout: { duration: 0.6, type: 'spring' } }}
+        onClick={() => setIsOpen((prev) => !prev)}
+        className="card"
+        style={{ borderRadius: '1rem', boxShadow: '0px 10px 30px rgba(0,0,0,0.5)' }}
+      >
+        <motion.h2 layout="position">Framer Motion ✨</motion.h2>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="expand"
+          >
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Mollitia est consequatur
+              tempora consectetur cumque aspernatur sit. Inventore consequatur fuga eveniet.
+            </p>
+            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Soluta, blanditiis.</p>
+          </motion.div>
+        )}
+      </motion.div>
+    </div>
   );
 }
 
